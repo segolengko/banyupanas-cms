@@ -5,6 +5,8 @@ import { getSession } from '@/lib/auth/session';
 import { getSupabaseAdmin, isCmsBackendConfigured, recordAuditEvent } from '@/lib/cms/repository';
 import type { MediaItemRole } from '@/types';
 
+const MAX_MEDIA_UPLOAD_BYTES = 10 * 1024 * 1024;
+
 function sanitizeFileName(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9.-]+/g, '-');
 }
@@ -36,6 +38,38 @@ function normalizeTags(input: unknown) {
     .map((tag) => String(tag || '').trim())
     .filter(Boolean)
     .slice(0, 8);
+}
+
+function createStoragePath(name: string) {
+  const splitName = name.split('.');
+  const fileExtension = splitName.length > 1 ? splitName.pop() : '';
+  const fileBaseName = splitName.join('.') || name;
+
+  return `${new Date().getFullYear()}/${randomUUID()}-${sanitizeFileName(fileBaseName)}${fileExtension ? `.${fileExtension}` : ''}`;
+}
+
+function validateMediaUploadCandidate({
+  name,
+  contentType,
+  size,
+}: {
+  name: string;
+  contentType: string;
+  size: number;
+}) {
+  if (!name.trim()) {
+    return 'Nama file upload tidak valid.';
+  }
+
+  if (!contentType.startsWith('image/') && !contentType.startsWith('video/')) {
+    return 'Hanya gambar atau video yang diperbolehkan.';
+  }
+
+  if (size > MAX_MEDIA_UPLOAD_BYTES) {
+    return 'Ukuran file maksimal 10 MB.';
+  }
+
+  return null;
 }
 
 export async function POST(request: Request) {
@@ -74,6 +108,128 @@ export async function POST(request: Request) {
     );
   }
 
+  const contentType = request.headers.get('content-type') || '';
+  const supabase = getSupabaseAdmin();
+
+  if (contentType.includes('application/json')) {
+    const payload = (await request.json()) as
+      | {
+          action?: 'prepare-upload';
+          fileName?: unknown;
+          contentType?: unknown;
+          size?: unknown;
+        }
+      | {
+          action?: 'complete-upload';
+          storagePath?: unknown;
+          fileName?: unknown;
+          contentType?: unknown;
+          size?: unknown;
+        };
+
+    if (payload.action === 'prepare-upload') {
+      const fileName = String(payload.fileName || '').trim();
+      const uploadContentType = String(payload.contentType || '').trim();
+      const uploadSize = Number(payload.size || 0);
+      const validationError = validateMediaUploadCandidate({
+        name: fileName,
+        contentType: uploadContentType,
+        size: uploadSize,
+      });
+
+      if (validationError) {
+        return NextResponse.json(
+          {
+            error: validationError,
+          },
+          { status: 400 },
+        );
+      }
+
+      const storagePath = createStoragePath(fileName);
+      const { data, error } = await supabase.storage.from('media').createSignedUploadUrl(storagePath);
+
+      if (error || !data?.signedUrl || !data.token) {
+        return NextResponse.json(
+          {
+            error: error?.message || 'Gagal menyiapkan signed upload URL.',
+          },
+          { status: 500 },
+        );
+      }
+
+      return NextResponse.json({
+        ok: true,
+        storagePath,
+        signedUrl: data.signedUrl,
+      });
+    }
+
+    if (payload.action === 'complete-upload') {
+      const storagePath = String(payload.storagePath || '').trim();
+      const fileName = String(payload.fileName || storagePath).trim();
+      const uploadContentType = String(payload.contentType || '').trim();
+      const uploadSize = Number(payload.size || 0);
+
+      if (!storagePath) {
+        return NextResponse.json(
+          {
+            error: 'Storage path upload tidak valid.',
+          },
+          { status: 400 },
+        );
+      }
+
+      if (uploadContentType) {
+        const validationError = validateMediaUploadCandidate({
+          name: fileName,
+          contentType: uploadContentType,
+          size: uploadSize,
+        });
+
+        if (validationError) {
+          return NextResponse.json(
+            {
+              error: validationError,
+            },
+            { status: 400 },
+          );
+        }
+      }
+
+      await supabase.from('media_assets').upsert({
+        storage_path: storagePath,
+        alt_text: getDefaultAltText(fileName),
+        role: 'general',
+        tags: [],
+      });
+
+      await recordAuditEvent({
+        eventType: 'media.upload',
+        actorEmail: session.email,
+        resourceType: 'media',
+        resourceId: storagePath,
+        detail: `Mengunggah aset media "${fileName}" ke ${storagePath}.`,
+        metadata: {
+          contentType: uploadContentType || null,
+          size: uploadSize || null,
+          transport: 'signed-upload-url',
+        },
+      });
+
+      return NextResponse.json({
+        ok: true,
+      });
+    }
+
+    return NextResponse.json(
+      {
+        error: 'Action upload tidak dikenali.',
+      },
+      { status: 400 },
+    );
+  }
+
   const formData = await request.formData();
   const file = formData.get('file');
 
@@ -86,30 +242,23 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+  const validationError = validateMediaUploadCandidate({
+    name: file.name,
+    contentType: file.type,
+    size: file.size,
+  });
+
+  if (validationError) {
     return NextResponse.json(
       {
-        error: 'Hanya gambar atau video yang diperbolehkan.',
+        error: validationError,
       },
       { status: 400 },
     );
   }
 
-  if (file.size > 10 * 1024 * 1024) {
-    return NextResponse.json(
-      {
-        error: 'Ukuran file maksimal 10 MB.',
-      },
-      { status: 400 },
-    );
-  }
-
-  const splitName = file.name.split('.');
-  const fileExtension = splitName.length > 1 ? splitName.pop() : '';
-  const fileBaseName = splitName.join('.') || file.name;
-  const storagePath = `${new Date().getFullYear()}/${randomUUID()}-${sanitizeFileName(fileBaseName)}${fileExtension ? `.${fileExtension}` : ''}`;
+  const storagePath = createStoragePath(file.name);
   const arrayBuffer = await file.arrayBuffer();
-  const supabase = getSupabaseAdmin();
 
   const { error } = await supabase.storage.from('media').upload(storagePath, Buffer.from(arrayBuffer), {
     contentType: file.type,

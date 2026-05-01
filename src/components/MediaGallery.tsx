@@ -30,6 +30,54 @@ const roleOptions: Array<{ value: 'all' | MediaItemRole; label: string }> = [
   { value: 'gallery', label: 'Gallery' },
 ];
 
+async function readJsonOrText(response: Response) {
+  const responseType = response.headers.get('content-type') || '';
+
+  if (responseType.includes('application/json')) {
+    return (await response.json()) as { error?: string; ok?: boolean; signedUrl?: string; storagePath?: string };
+  }
+
+  const text = (await response.text()).trim();
+
+  if (
+    response.status === 413 ||
+    /FUNCTION_PAYLOAD_TOO_LARGE|Request Entity Too Large|Payload Too Large|Request Entity/i.test(text)
+  ) {
+    return {
+      error:
+        'Upload gagal karena request terlalu besar untuk diproses server. Sistem sekarang memakai upload langsung ke storage; coba ulangi sekali lagi dengan file maksimal 10 MB.',
+    };
+  }
+
+  if (text.startsWith('<!DOCTYPE html')) {
+    return {
+      error: `Server mengembalikan halaman error (${response.status}). Coba ulangi beberapa saat lagi.`,
+    };
+  }
+
+  return {
+    error: text || `Request gagal dengan status ${response.status}.`,
+  };
+}
+
+async function uploadFileToSignedUrl(file: File, signedUrl: string) {
+  const formData = new FormData();
+  formData.append('cacheControl', '3600');
+  formData.append('', file);
+
+  const response = await fetch(signedUrl, {
+    method: 'PUT',
+    body: formData,
+  });
+
+  if (response.ok) {
+    return;
+  }
+
+  const payload = await readJsonOrText(response);
+  throw new Error(payload.error || 'Upload ke storage gagal.');
+}
+
 function getInitialDrafts(items: MediaItem[]) {
   return Object.fromEntries(
     items.map((item) => [
@@ -110,18 +158,43 @@ export default function MediaGallery({
     setIsUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/admin/media', {
+      const prepareResponse = await fetch('/api/admin/media', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'prepare-upload',
+          fileName: file.name,
+          contentType: file.type,
+          size: file.size,
+        }),
       });
+      const prepareResult = await readJsonOrText(prepareResponse);
 
-      const result = await response.json();
+      if (!prepareResponse.ok || !prepareResult.signedUrl || !prepareResult.storagePath) {
+        throw new Error(prepareResult.error || 'Upload gagal disiapkan.');
+      }
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Upload gagal.');
+      await uploadFileToSignedUrl(file, prepareResult.signedUrl);
+
+      const completeResponse = await fetch('/api/admin/media', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'complete-upload',
+          storagePath: prepareResult.storagePath,
+          fileName: file.name,
+          contentType: file.type,
+          size: file.size,
+        }),
+      });
+      const completeResult = await readJsonOrText(completeResponse);
+
+      if (!completeResponse.ok) {
+        throw new Error(completeResult.error || 'Metadata upload gagal disimpan.');
       }
 
       setNotice('Asset berhasil diupload.');
@@ -150,7 +223,7 @@ export default function MediaGallery({
       const response = await fetch(`/api/admin/media?path=${encodeURIComponent(path)}`, {
         method: 'DELETE',
       });
-      const result = await response.json();
+      const result = await readJsonOrText(response);
 
       if (!response.ok) {
         throw new Error(result.error || 'Gagal menghapus asset.');
@@ -195,7 +268,7 @@ export default function MediaGallery({
           name: item.name,
         }),
       });
-      const result = await response.json();
+      const result = await readJsonOrText(response);
 
       if (!response.ok) {
         throw new Error(result.error || 'Gagal menyimpan metadata.');
