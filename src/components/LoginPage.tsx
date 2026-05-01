@@ -39,11 +39,13 @@ export default function LoginPage({
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[560px] items-center">
         <div className="surface-panel w-full px-5 py-6 md:px-7 md:py-8">
           <div className="w-full">
-            <div className="mb-8 space-y-5">
-              <BrandLockup className="h-[84px] w-[210px] md:h-[96px] md:w-[240px]" priority />
-              <div>
+            <div className="mb-8 space-y-6">
+              <div className="flex justify-center">
+                <BrandLockup className="h-[160px] w-[220px] md:h-[176px] md:w-[244px]" priority />
+              </div>
+              <div className="space-y-3">
                 <h1 className="font-display text-4xl text-ink-950 md:text-[2.8rem]">Masuk ke dashboard</h1>
-                <p className="mt-3 text-sm leading-7 text-ink-800/72">
+                <p className="text-sm leading-7 text-ink-800/72">
                   Gunakan kredensial admin yang disimpan di environment server.
                 </p>
               </div>
