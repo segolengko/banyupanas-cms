@@ -48,6 +48,29 @@ function createStoragePath(name: string) {
   return `${new Date().getFullYear()}/${randomUUID()}-${sanitizeFileName(fileBaseName)}${fileExtension ? `.${fileExtension}` : ''}`;
 }
 
+async function storageObjectExists(storagePath: string) {
+  const normalizedPath = storagePath.trim().replace(/^\/+/, '');
+
+  if (!normalizedPath) {
+    return false;
+  }
+
+  const lastSlashIndex = normalizedPath.lastIndexOf('/');
+  const directory = lastSlashIndex >= 0 ? normalizedPath.slice(0, lastSlashIndex) : '';
+  const fileName = lastSlashIndex >= 0 ? normalizedPath.slice(lastSlashIndex + 1) : normalizedPath;
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.storage.from('media').list(directory, {
+    limit: 100,
+    search: fileName,
+  });
+
+  if (error || !data?.length) {
+    return false;
+  }
+
+  return data.some((entry) => entry.name === fileName);
+}
+
 function validateMediaUploadCandidate({
   name,
   contentType,
@@ -195,6 +218,17 @@ export async function POST(request: Request) {
             { status: 400 },
           );
         }
+      }
+
+      const objectExists = await storageObjectExists(storagePath);
+
+      if (!objectExists) {
+        return NextResponse.json(
+          {
+            error: 'File upload belum ditemukan di storage. Coba unggah ulang media lalu simpan lagi.',
+          },
+          { status: 409 },
+        );
       }
 
       await supabase.from('media_assets').upsert({

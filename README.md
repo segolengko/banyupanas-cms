@@ -18,6 +18,7 @@ Frontend ini sudah dipindahkan ke **Next.js App Router** dan disusun ulang untuk
 - Kontrol desain publik sekarang juga mencakup **hero mood**, **button style**, dan **surface style**.
 - Hardening terbaru menambahkan **validasi URL settings**, **lockout login persisten**, dan pengetatan policy Supabase agar write berjalan lewat server yang memegang `service_role`.
 - CSP production sekarang memakai **nonce per request** lewat `proxy.ts`, mengikuti pola keamanan Next.js App Router agar tidak bergantung pada `'unsafe-inline'`.
+- Session admin sekarang juga mendukung **registry server-side** agar logout dan invalidasi session tidak hanya bergantung pada expiry JWT.
 
 ## Prasyarat
 
@@ -90,6 +91,7 @@ Migration yang disiapkan akan membuat:
 - Table `site_settings`
 - Table `admin_audit_log`
 - Table `admin_login_attempts`
+- Table `admin_sessions`
 - Table `media_assets`
 - Bucket storage `media`
 - Trigger `updated_at`
@@ -105,3 +107,34 @@ Kalau backend Supabase belum dihubungkan, aplikasi tetap bisa tampil dalam **mod
 - media upload tidak aktif,
 - audit log tidak tercatat,
 - halaman publik memakai fallback mock bila `NEXT_PUBLIC_SUPABASE_ANON_KEY` belum diisi.
+
+## Rencana Integrasi Google Review Auto-Reply
+
+Fitur ini **belum diimplementasikan** di CMS saat ini. Catatan ini disimpan sebagai roadmap teknis jika nanti ingin mengotomatisasi balasan review Google Business Profile.
+
+Urutan kerja yang disarankan:
+
+1. Pastikan lokasi Google Business Profile sudah **verified** dan project Google Cloud sudah mendapat akses ke Business Profile APIs.
+2. Enable API yang dibutuhkan dan siapkan **OAuth 2.0** dengan scope `https://www.googleapis.com/auth/business.manage`.
+3. Simpan koneksi akun Google, token OAuth, account, location, review, dan job reply di table terpisah.
+4. Ambil review dari endpoint `accounts.locations.reviews.list`.
+5. Terapkan rule balasan:
+   - rating `4-5` bisa masuk jalur auto-reply,
+   - rating `1-3` sebaiknya masuk draft atau approval admin.
+6. Kirim balasan lewat endpoint `accounts.locations.reviews.updateReply`.
+7. Untuk sinkronisasi review baru, mulai dari **polling** berkala lalu naik ke **Notifications API + Cloud Pub/Sub** kalau sudah butuh realtime.
+8. Simpan audit log internal untuk status `pending`, `sent`, `failed`, dan `skipped`.
+
+Catatan kebijakan penting:
+
+- Google mewajibkan otorisasi dari pemilik bisnis atau end-client sebelum kita membalas review atas nama mereka.
+- Jangan aktifkan auto-reply penuh tanpa approval yang jelas, terutama untuk review negatif atau sensitif.
+
+Referensi resmi:
+
+- Business Profile overview: https://developers.google.com/my-business/content/overview
+- Basic setup: https://developers.google.com/my-business/content/basic-setup
+- OAuth implementation: https://developers.google.com/my-business/content/implement-oauth
+- Reviews resource (`list`, `updateReply`): https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews
+- Notifications / Pub/Sub: https://developers.google.com/my-business/content/notification-setup
+- API policies: https://developers.google.com/my-business/content/policies

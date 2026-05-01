@@ -257,7 +257,7 @@ function normalizeContentRow(row: Record<string, unknown>): ContentItem {
     createdAt: String(row.created_at || new Date().toISOString()),
     updatedAt: String(row.updated_at || new Date().toISOString()),
     publishedAt: row.published_at ? String(row.published_at) : null,
-    coverImage: String(row.cover_image || '').trim(),
+    coverImage: sanitizeMediaAssetUrl(String(row.cover_image || '').trim()),
     seoTitle: String(row.seo_title || row.title || ''),
     seoDescription: String(row.seo_description || row.excerpt || ''),
     featured: Boolean(row.featured),
@@ -763,13 +763,15 @@ export async function saveContentAction(_: FormActionState, formData: FormData):
   const status = (String(formData.get('status') || 'draft') as ContentItem['status']) || 'draft';
   const author = String(formData.get('author') || 'Admin CMS').trim();
   const type = (String(formData.get('type') || 'article') as ContentItem['type']) || 'article';
-  const coverImage = String(formData.get('coverImage') || '').trim();
+  const rawCoverImage = String(formData.get('coverImage') || '').trim();
+  const coverImage = sanitizeMediaAssetUrl(rawCoverImage);
   const seoTitle = String(formData.get('seoTitle') || '').trim();
   const seoDescription = String(formData.get('seoDescription') || '').trim();
   const id = String(formData.get('id') || '').trim();
   const featured = formData.get('featured') === 'on';
   const existingPublishedAt = String(formData.get('publishedAt') || '').trim() || null;
   const slug = slugify(rawSlug || title);
+  const invalidUrlLabels: string[] = [];
 
   if (!title || !slug || !excerpt || !content) {
     return {
@@ -783,6 +785,15 @@ export async function saveContentAction(_: FormActionState, formData: FormData):
       status: 'demo',
       message:
         'Mode demo aktif. Hubungkan SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY untuk menyimpan perubahan dengan aman di server.',
+    };
+  }
+
+  pushInvalidUrlLabel(rawCoverImage, coverImage, 'Cover image', invalidUrlLabels);
+
+  if (invalidUrlLabels.length > 0) {
+    return {
+      status: 'error',
+      message: `Periksa format URL berikut: ${invalidUrlLabels.join(', ')}.`,
     };
   }
 

@@ -100,10 +100,6 @@ export default function LoginPage({
               <Link href="/" className="font-semibold text-oasis-600 transition hover:text-oasis-500">
                 Kembali ke website publik
               </Link>
-              <p>
-                Tip setup hash: gunakan hash `scrypt` di environment agar password tidak pernah disimpan
-                dalam bentuk plain text.
-              </p>
             </div>
           </div>
         </div>
