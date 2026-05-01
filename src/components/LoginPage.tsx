@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { ArrowRight, LockKeyhole, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, LockKeyhole } from 'lucide-react';
 import { BrandLockup } from '@/components/BrandLogo';
 
 type AuthActionState = {
@@ -36,50 +36,13 @@ export default function LoginPage({
 
   return (
     <div className="theme-admin-shell min-h-screen px-4 py-8 md:px-6">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-[1240px] gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch">
-        <div className="surface-panel fine-grid flex flex-col justify-between overflow-hidden px-6 py-7 md:px-8 lg:px-10">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <BrandLockup className="h-[88px] w-[220px] md:h-[104px] md:w-[260px]" priority />
-              <p className="text-xs uppercase tracking-[0.24em] text-ink-800/56">Public CMS Control Room</p>
-            </div>
-            <div className="space-y-5">
-              <p className="inline-flex items-center gap-2 rounded-full border border-oasis-500/15 bg-oasis-500/8 px-4 py-2 text-sm font-semibold text-oasis-600">
-                <ShieldCheck size={16} />
-                Public-facing CMS with safer boundaries
-              </p>
-              <h1 className="max-w-2xl font-display text-5xl leading-[1.04] text-ink-950 md:text-6xl">
-                Area admin baru yang lebih layak untuk website publik.
-              </h1>
-              <p className="max-w-xl text-base leading-8 text-ink-800/76">
-                Login sekarang dijaga dari sisi server dengan cookie `httpOnly`, proteksi route, dan
-                kredensial yang tidak lagi ditanam di browser pengguna.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              'Session admin dipisah dari browser storage.',
-              'Route admin difilter sejak request pertama.',
-              'Arsitektur siap untuk operasi tulis yang aman di server.',
-            ].map((item) => (
-              <div key={item} className="rounded-[24px] border border-ink-950/8 bg-white/76 p-4 text-sm leading-7 text-ink-800/76">
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="surface-panel flex items-center justify-center px-5 py-6 md:px-7">
-          <div className="w-full max-w-md">
-            <div className="mb-8 space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-copper-400/16 bg-copper-400/10 px-4 py-2 text-sm font-semibold text-copper-500">
-                <Sparkles size={16} />
-                Secure admin sign-in
-              </div>
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[560px] items-center">
+        <div className="surface-panel w-full px-5 py-6 md:px-7 md:py-8">
+          <div className="w-full">
+            <div className="mb-8 space-y-5">
+              <BrandLockup className="h-[84px] w-[210px] md:h-[96px] md:w-[240px]" priority />
               <div>
-                <h2 className="font-display text-4xl text-ink-950">Masuk ke dashboard</h2>
+                <h1 className="font-display text-4xl text-ink-950 md:text-[2.8rem]">Masuk ke dashboard</h1>
                 <p className="mt-3 text-sm leading-7 text-ink-800/72">
                   Gunakan kredensial admin yang disimpan di environment server.
                 </p>

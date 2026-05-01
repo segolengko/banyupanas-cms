@@ -1,16 +1,16 @@
 update public.site_settings
 set
   site_tagline = 'Destinasi air panas untuk jeda akhir pekan yang lebih tertata',
-  site_description = 'Cocok untuk trial pengalaman website publik, dari hero, tiket, cerita, hingga informasi lokasi.',
+  site_description = 'Website publik Banyu Panas Cirebon yang menampilkan informasi kunjungan, harga tiket, cerita, dan lokasi.',
   theme_preset = 'oasis',
   hero_layout_style = 'immersive',
   trust_chip_style = 'soft',
   hero_mood = 'calm',
   button_style = 'pill',
   surface_style = 'soft',
-  hero_eyebrow = 'Seed Trial',
+  hero_eyebrow = 'Wisata Air Panas Alami',
   hero_title = 'Rancang pengalaman kunjungan yang terasa lebih jelas sejak halaman pertama.',
-  hero_description = 'Data seed ini dibuat untuk menghidupkan trial CMS tanpa mengunci kamu ke copy demo lama. Semua isi bisa diganti langsung dari dashboard admin.',
+  hero_description = 'Nikmati informasi kunjungan, harga tiket, dan cerita terbaru Banyu Panas Cirebon dalam satu pengalaman yang lebih rapi.',
   hero_poster_image = 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1800&q=80',
   hero_video_url = 'https://dwrpaczutipjyygjegcl.supabase.co/storage/v1/object/public/media/hero/hot-spring-kusatsu-onsen-204278-medium.mp4',
   hero_trust_chips = jsonb_build_array(
@@ -33,7 +33,7 @@ set
     jsonb_build_object('label', 'Jam terbaik', 'value', 'Pagi - Sore'),
     jsonb_build_object('label', 'Format kunjungan', 'value', 'Keluarga'),
     jsonb_build_object('label', 'Akses lokasi', 'value', 'Gempol-Palimanan'),
-    jsonb_build_object('label', 'Mode trial', 'value', 'Live')
+    jsonb_build_object('label', 'Status kunjungan', 'value', 'Live')
   ),
   ticket_options = jsonb_build_array(
     jsonb_build_object(
@@ -78,41 +78,41 @@ values
     'panduan-kunjungan-pagi',
     'Panduan Kunjungan Pagi untuk Pengunjung Pertama',
     'Ringkasan singkat tentang waktu datang, alur masuk, dan ritme kunjungan yang lebih nyaman.',
-    'Kunjungan pagi biasanya memberi suasana yang lebih tenang untuk tamu yang ingin mencoba pengalaman rendam tanpa keramaian berlebih. Data seed ini bisa kamu gunakan untuk mengetes alur publikasi artikel, tampilan cover, dan halaman detail cerita.',
+    'Kunjungan pagi biasanya memberi suasana yang lebih tenang untuk tamu yang ingin menikmati pengalaman rendam tanpa keramaian berlebih. Artikel ini bisa membantu pengunjung memahami waktu kunjungan yang lebih nyaman sejak sebelum berangkat.',
     'published',
     'Tim Editorial',
     'article',
     'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80',
     'Panduan Kunjungan Pagi',
-    'Artikel seed untuk mencoba halaman cerita publik.',
+    'Panduan singkat untuk pengunjung yang ingin datang lebih pagi.',
     true,
     timezone('utc', now())
   ),
   (
     'tentang-destinasi',
     'Tentang Destinasi dan Arah Pengalaman yang Ingin Dibangun',
-    'Halaman seed yang menjelaskan arah pengalaman, ritme kunjungan, dan pendekatan presentasi website.',
-    'Konten ini berfungsi sebagai contoh halaman publik dari CMS. Kamu bisa memakainya untuk menguji struktur page, metadata, dan pola navigasi dari homepage ke detail cerita tanpa harus membuat semuanya dari nol saat trial pertama.',
+    'Halaman yang menjelaskan arah pengalaman, ritme kunjungan, dan pendekatan presentasi website.',
+    'Halaman ini menjelaskan bagaimana Banyu Panas Cirebon ingin menghadirkan pengalaman kunjungan yang lebih tertata, informatif, dan mudah dipahami oleh pengunjung sejak halaman pertama.',
     'published',
     'Tim Editorial',
     'page',
     'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1200&q=80',
     'Tentang Destinasi',
-    'Halaman seed untuk mencoba tipe page di jalur publik.',
+    'Gambaran singkat tentang arah pengalaman dan presentasi destinasi.',
     false,
     timezone('utc', now())
   ),
   (
     'info-jam-operasional-akhir-pekan',
     'Info Jam Operasional Akhir Pekan',
-    'Pengumuman seed untuk menguji tipe konten announcement di area publik.',
-    'Gunakan pengumuman ini untuk mencoba bagaimana CMS menampilkan update singkat yang tetap terlihat rapi di daftar cerita. Setelah trial selesai, konten seed ini bisa dihapus atau diubah sesuai kebutuhan operasional sebenarnya.',
+    'Pengumuman singkat untuk memberi tahu jam operasional akhir pekan kepada pengunjung.',
+    'Gunakan pengumuman ini untuk menyampaikan update singkat yang tetap rapi tampil di area publik, seperti penyesuaian jam operasional, kepadatan kunjungan, atau informasi layanan tertentu.',
     'published',
     'Tim Operasional',
     'announcement',
     'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
     'Info Jam Operasional Akhir Pekan',
-    'Announcement seed untuk mencoba variasi konten publik.',
+    'Pengumuman publik terkait jam operasional akhir pekan.',
     false,
     timezone('utc', now())
   )

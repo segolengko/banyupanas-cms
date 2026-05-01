@@ -68,7 +68,7 @@ export default function LandingPage({
   const heroTitle = settings.heroTitle || 'Konten landing page belum diisi.';
   const heroDescription =
     settings.heroDescription ||
-    'Atur hero, tiket, cerita, dan kontak dari dashboard admin untuk memulai trial tanpa konten demo bawaan.';
+    'Lengkapi informasi kunjungan, harga tiket, cerita, dan kontak agar halaman publik tampil lebih utuh.';
   const heroPosterImage = settings.heroPosterImage || stories[0]?.coverImage || fallbackHeroPoster;
   const visibleTrustChips = settings.trustChips.filter(Boolean);
   const visibleMetrics = settings.metrics.filter((metric) => metric.label && metric.value);
@@ -148,15 +148,6 @@ export default function LandingPage({
                   </p>
                 )}
               </div>
-              <Link
-                href="/admin/login"
-                className={cn(
-                  'inline-flex shrink-0 items-center justify-center border border-white/16 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/16 sm:hidden',
-                  buttonShape,
-                )}
-              >
-                Admin
-              </Link>
             </div>
 
             <nav className="hidden items-center gap-8 text-sm font-semibold text-white/78 md:flex">
@@ -173,16 +164,6 @@ export default function LandingPage({
                 Kontak
               </a>
             </nav>
-
-            <Link
-              href="/admin/login"
-              className={cn(
-                'hidden border border-white/16 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/16 sm:inline-flex sm:items-center sm:justify-center',
-                buttonShape,
-              )}
-            >
-              Admin Login
-            </Link>
           </header>
 
           <div className="custom-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1 md:hidden">
@@ -312,7 +293,7 @@ export default function LandingPage({
               </h2>
             </div>
             <p className="max-w-xl text-[15px] leading-7 text-ink-800/75 sm:text-base sm:leading-8">
-              Section ini akan menampilkan opsi tiket begitu kamu mengisinya dari dashboard admin.
+              Pilihan tiket yang tampil di sini membantu pengunjung memahami opsi kunjungan sebelum datang.
             </p>
           </div>
 
@@ -361,7 +342,7 @@ export default function LandingPage({
               </h2>
             </div>
             <p className="max-w-xl text-[15px] leading-7 text-ink-800/75 sm:text-base sm:leading-8">
-              Konten yang dipublikasikan dari admin akan muncul di sini tanpa data demo bawaan.
+              Cerita terbaru, panduan kunjungan, dan informasi penting akan tampil di sini saat sudah diterbitkan.
             </p>
           </div>
 
@@ -446,7 +427,7 @@ export default function LandingPage({
                 Informasi publik
               </h2>
               <p className="max-w-2xl text-[15px] leading-7 text-white/78 sm:text-base sm:leading-8">
-                {settings.siteDescription || 'Isi informasi kontak, lokasi, dan sosial media dari dashboard admin.'}
+                {settings.siteDescription || 'Lengkapi informasi kontak, lokasi, dan media sosial resmi untuk memudahkan pengunjung.'}
               </p>
 
               {hasContactInfo ? (
@@ -550,15 +531,6 @@ export default function LandingPage({
                 >
                   {settings.secondaryCtaLabel}
                 </ActionLink>
-                <Link
-                  href="/admin/login"
-                  className={cn(
-                    'inline-flex min-h-[3.25rem] items-center justify-center border border-white/18 px-6 py-3.5 text-center text-base font-semibold text-white transition hover:bg-white/10',
-                    buttonShape,
-                  )}
-                >
-                  Akses dashboard admin
-                </Link>
               </div>
             </div>
           </div>
