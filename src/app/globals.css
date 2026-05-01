@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+
+  --color-sand-50: #f8f4ec;
+  --color-sand-100: #f1e7d6;
+  --color-sand-200: #e4d2b6;
+  --color-ink-950: #102126;
+  --color-ink-900: #17323a;
+  --color-ink-800: #23444d;
+  --color-oasis-500: #1f8a80;
+  --color-oasis-600: #176d66;
+  --color-copper-400: #d5925d;
+  --color-copper-500: #bd7340;
+  --color-mist-100: #e6f3f2;
+  --color-mist-200: #d1ebe7;
+  --color-slate-925: #0f1720;
+}
+
+:root,
+[data-theme='oasis'] {
+  --theme-body-radial-a: rgba(31, 138, 128, 0.18);
+  --theme-body-radial-b: rgba(213, 146, 93, 0.16);
+  --theme-body-start: #f8f4ec;
+  --theme-body-mid: #f4efe5;
+  --theme-body-end: #ffffff;
+  --theme-admin-start: #f6efe4;
+  --theme-admin-mid: #f8f7f2;
+  --theme-admin-end: #fbfbf9;
+  --theme-hero-start: #0d1b20;
+  --theme-hero-mid: #12313a;
+  --theme-hero-end: #0f272e;
+  --theme-hero-radial: rgba(31, 138, 128, 0.2);
+  --theme-hero-overlay-start: rgba(8, 16, 18, 0.26);
+  --theme-hero-overlay-mid: rgba(8, 16, 18, 0.2);
+  --theme-hero-overlay-deep: rgba(8, 16, 18, 0.52);
+  --theme-hero-overlay-end: rgba(8, 16, 18, 0.76);
+  --theme-hero-orb-a: rgba(31, 138, 128, 0.16);
+  --theme-hero-orb-b: rgba(213, 146, 93, 0.14);
+  --theme-preview-start: #17323a;
+  --theme-preview-mid: #1f8a80;
+  --theme-preview-end: #d5925d;
+  --theme-sidebar-glow-a: rgba(31, 138, 128, 0.14);
+  --theme-sidebar-glow-b: rgba(213, 146, 93, 0.16);
+  --theme-selection-bg: rgba(31, 138, 128, 0.2);
+}
+
+[data-theme='mineral'] {
+  --color-sand-50: #f2f5f7;
+  --color-sand-100: #dbe6ec;
+  --color-sand-200: #bfd2db;
+  --color-ink-950: #10202c;
+  --color-ink-900: #183344;
+  --color-ink-800: #295168;
+  --color-oasis-500: #3a7ca5;
+  --color-oasis-600: #2a628f;
+  --color-copper-400: #f0a35c;
+  --color-copper-500: #d17b35;
+  --color-mist-100: #e6f0f5;
+  --color-mist-200: #d0e1eb;
+  --theme-body-radial-a: rgba(58, 124, 165, 0.17);
+  --theme-body-radial-b: rgba(240, 163, 92, 0.15);
+  --theme-body-start: #eef4f8;
+  --theme-body-mid: #f4f7fa;
+  --theme-body-end: #ffffff;
+  --theme-admin-start: #e9f0f5;
+  --theme-admin-mid: #f5f8fa;
+  --theme-admin-end: #fcfdfe;
+  --theme-hero-start: #0f1822;
+  --theme-hero-mid: #163041;
+  --theme-hero-end: #102634;
+  --theme-hero-radial: rgba(58, 124, 165, 0.22);
+  --theme-hero-overlay-start: rgba(8, 14, 22, 0.24);
+  --theme-hero-overlay-mid: rgba(8, 14, 22, 0.18);
+  --theme-hero-overlay-deep: rgba(8, 14, 22, 0.5);
+  --theme-hero-overlay-end: rgba(8, 14, 22, 0.76);
+  --theme-hero-orb-a: rgba(58, 124, 165, 0.16);
+  --theme-hero-orb-b: rgba(240, 163, 92, 0.14);
+  --theme-preview-start: #183344;
+  --theme-preview-mid: #3a7ca5;
+  --theme-preview-end: #f0a35c;
+  --theme-sidebar-glow-a: rgba(58, 124, 165, 0.14);
+  --theme-sidebar-glow-b: rgba(240, 163, 92, 0.16);
+  --theme-selection-bg: rgba(58, 124, 165, 0.2);
+}
+
+[data-theme='forest'] {
+  --color-sand-50: #f4f3eb;
+  --color-sand-100: #e5e1cf;
+  --color-sand-200: #d0c9a8;
+  --color-ink-950: #13231b;
+  --color-ink-900: #1f3a2d;
+  --color-ink-800: #315546;
+  --color-oasis-500: #3f7d4e;
+  --color-oasis-600: #2f6140;
+  --color-copper-400: #c89b5e;
+  --color-copper-500: #a87842;
+  --color-mist-100: #e4efe6;
+  --color-mist-200: #cfdfd2;
+  --theme-body-radial-a: rgba(63, 125, 78, 0.17);
+  --theme-body-radial-b: rgba(200, 155, 94, 0.15);
+  --theme-body-start: #f2f0e7;
+  --theme-body-mid: #f6f4ee;
+  --theme-body-end: #ffffff;
+  --theme-admin-start: #efede2;
+  --theme-admin-mid: #f7f5ef;
+  --theme-admin-end: #fbfbf8;
+  --theme-hero-start: #0e1913;
+  --theme-hero-mid: #183025;
+  --theme-hero-end: #10241c;
+  --theme-hero-radial: rgba(63, 125, 78, 0.22);
+  --theme-hero-overlay-start: rgba(8, 14, 11, 0.24);
+  --theme-hero-overlay-mid: rgba(8, 14, 11, 0.18);
+  --theme-hero-overlay-deep: rgba(8, 14, 11, 0.5);
+  --theme-hero-overlay-end: rgba(8, 14, 11, 0.76);
+  --theme-hero-orb-a: rgba(63, 125, 78, 0.16);
+  --theme-hero-orb-b: rgba(200, 155, 94, 0.14);
+  --theme-preview-start: #1f3a2d;
+  --theme-preview-mid: #3f7d4e;
+  --theme-preview-end: #c89b5e;
+  --theme-sidebar-glow-a: rgba(63, 125, 78, 0.14);
+  --theme-sidebar-glow-b: rgba(200, 155, 94, 0.16);
+  --theme-selection-bg: rgba(63, 125, 78, 0.2);
+}
+
+[data-theme='sunset'] {
+  --color-sand-50: #fcf2ea;
+  --color-sand-100: #f8dfcf;
+  --color-sand-200: #efc1a5;
+  --color-ink-950: #2c1a18;
+  --color-ink-900: #4a2a27;
+  --color-ink-800: #6a3e37;
+  --color-oasis-500: #c95c37;
+  --color-oasis-600: #a94827;
+  --color-copper-400: #efb15f;
+  --color-copper-500: #cf8937;
+  --color-mist-100: #fae7dc;
+  --color-mist-200: #f5d5c4;
+  --theme-body-radial-a: rgba(201, 92, 55, 0.17);
+  --theme-body-radial-b: rgba(239, 177, 95, 0.15);
+  --theme-body-start: #fdf1e9;
+  --theme-body-mid: #fbf2ed;
+  --theme-body-end: #ffffff;
+  --theme-admin-start: #faece2;
+  --theme-admin-mid: #fbf4ef;
+  --theme-admin-end: #fdfbf9;
+  --theme-hero-start: #261513;
+  --theme-hero-mid: #452520;
+  --theme-hero-end: #331b18;
+  --theme-hero-radial: rgba(201, 92, 55, 0.22);
+  --theme-hero-overlay-start: rgba(20, 10, 8, 0.24);
+  --theme-hero-overlay-mid: rgba(20, 10, 8, 0.18);
+  --theme-hero-overlay-deep: rgba(20, 10, 8, 0.5);
+  --theme-hero-overlay-end: rgba(20, 10, 8, 0.76);
+  --theme-hero-orb-a: rgba(201, 92, 55, 0.16);
+  --theme-hero-orb-b: rgba(239, 177, 95, 0.14);
+  --theme-preview-start: #4a2a27;
+  --theme-preview-mid: #c95c37;
+  --theme-preview-end: #efb15f;
+  --theme-sidebar-glow-a: rgba(201, 92, 55, 0.14);
+  --theme-sidebar-glow-b: rgba(239, 177, 95, 0.16);
+  --theme-selection-bg: rgba(201, 92, 55, 0.2);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, var(--theme-body-radial-a), transparent 32%),
+      radial-gradient(circle at top right, var(--theme-body-radial-b), transparent 28%),
+      linear-gradient(180deg, var(--theme-body-start) 0%, var(--theme-body-mid) 32%, var(--theme-body-end) 100%);
+    color: var(--color-ink-950);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    border-color: rgba(16, 33, 38, 0.08);
+  }
+
+  ::selection {
+    background: var(--theme-selection-bg);
+    color: var(--color-ink-950);
+  }
+}
+
+@utility surface-panel {
+  @apply rounded-[28px] border border-white/55 bg-white/82 shadow-[0_20px_60px_rgba(16,33,38,0.08)] backdrop-blur;
+}
+
+@utility theme-admin-shell {
+  background: linear-gradient(180deg, var(--theme-admin-start) 0%, var(--theme-admin-mid) 18%, var(--theme-admin-end) 100%);
+}
+
+@utility theme-hero-shell {
+  background: linear-gradient(180deg, var(--theme-hero-start) 0%, var(--theme-hero-mid) 45%, var(--theme-hero-end) 100%);
+}
+
+@utility theme-hero-overlay {
+  background:
+    radial-gradient(circle at top, var(--theme-hero-radial), transparent 42%),
+    linear-gradient(
+      180deg,
+      var(--theme-hero-overlay-start) 0%,
+      var(--theme-hero-overlay-mid) 24%,
+      var(--theme-hero-overlay-deep) 72%,
+      var(--theme-hero-overlay-end) 100%
+    );
+}
+
+@utility theme-hero-orb-a {
+  background: var(--theme-hero-orb-a);
+}
+
+@utility theme-hero-orb-b {
+  background: var(--theme-hero-orb-b);
+}
+
+@utility theme-preview-shell {
+  background: linear-gradient(135deg, var(--theme-preview-start) 0%, var(--theme-preview-mid) 60%, var(--theme-preview-end) 130%);
+}
+
+@utility theme-sidebar-glow {
+  background: linear-gradient(135deg, var(--theme-sidebar-glow-a), var(--theme-sidebar-glow-b));
+}
+
+@utility fine-grid {
+  background-image:
+    linear-gradient(rgba(16, 33, 38, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 33, 38, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+@utility custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(23, 50, 58, 0.25) transparent;
+}
+
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(23, 50, 58, 0.2);
+    border-radius: 999px;
+  }
+}
